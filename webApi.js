@@ -41,4 +41,12 @@ app.get('/summary/:username',(req, res) =>
         }, null, 4)))
 );
 
+app.get('/update/:username',(req, res) =>
+    trophy.update(req.params.username)
+        .then(data => res.end(JSON.stringify(data, null, 4)))
+        .catch(err => res.end(JSON.stringify({
+            error: {name:err.name, message: err.message}
+        }, null, 4)))
+);
+
 http.listen(port, host, () => console.log(`Server on ${host}:${port}`));

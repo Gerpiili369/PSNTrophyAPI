@@ -9,7 +9,7 @@ update = user => new Promise((resolve, reject) => {
         body: formData
     })
     .then(result => result.json()).then(data =>
-        data.success ? resolve() : reject({
+        data.success ? resolve({message: `${user}'s profile updated!`}) : reject({
             name: 'Failed to update profile',
             message:
                 data.message.indexOf('does not exist!') != -1 ? 'User doesn\'t exist!' :
