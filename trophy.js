@@ -87,12 +87,11 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
                     }
                 });
 
-                type = list[list.length - 1].trophy.type;
-                switch (type) {
-                    case '0': type = 'bronze';   break;
-                    case '1': type = 'silver';   break;
-                    case '2': type = 'gold';     break;
-                    case '3': type = 'platinum'; break;
+                switch (list[list.length - 1].trophy.type) {
+                    case '0': list[list.length - 1].trophy.type = 'bronze';   break;
+                    case '1': list[list.length - 1].trophy.type = 'silver';   break;
+                    case '2': list[list.length - 1].trophy.type = 'gold';     break;
+                    case '3': list[list.length - 1].trophy.type = 'platinum'; break;
                 }
             }
             resolve({summary: summary, list: list});
