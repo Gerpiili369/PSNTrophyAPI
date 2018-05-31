@@ -27,7 +27,7 @@ app.get('/trophies/:username', (req, res) =>
 
 app.get('/trophies/:username/:page', (req, res) =>
     trophy.getPage(req.params.username, req.params.page)
-        .then(data => res.end(JSON.stringify(data, null, 4)))
+        .then(data => res.end(JSON.stringify(data.list, null, 4)))
         .catch(err => res.end(JSON.stringify({
             error: {name:err.name, message: err.message}
         }, null, 4)))
