@@ -23,7 +23,7 @@ update = user => new Promise((resolve, reject) => {
 })
 
 getPage = (user, page = 1) => new Promise((resolve, reject) => {
-    if (page && (page < 1 || isNaN(page))) return reject({name: 'Number error', message: 'Invalid page number!'});
+    if (page < 1 || isNaN(page)) return reject({name: 'Number error', message: 'Invalid page number!'});
     const start = Date.now();
     let list = [], formData, summary, type;
 
@@ -40,11 +40,16 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
     })
         .then(result => result.json().catch(err => reject(
             {
-                name: 'JSON error',
+                name: 'Failed to get profile',
                 message: 'Profile could not be read! Maybe try updating it first?'
             })
         ))
         .then(data => {
+            if (!data.success) return reject({
+                name: 'Failed to get profile',
+                message: data.message
+            });
+            
             summary = {
                 username: user,
                 count: {
