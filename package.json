@@ -1,6 +1,6 @@
 {
   "name": "PSNTrophyAPI",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "API for Playstation trophies",
   "main": "trophy.js",
   "scripts": {

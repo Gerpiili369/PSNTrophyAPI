@@ -48,24 +48,6 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
                 message: data.message
             });
 
-            summary = {
-                username: user,
-                count: {
-                    total:          Number(data.data.count),
-                    byType: {
-                        bronze:     Number(data.data.type_counts.bronze_sum),
-                        silver:     Number(data.data.type_counts.silver_sum),
-                        gold:       Number(data.data.type_counts.gold_sum),
-                        platinum:   Number(data.data.type_counts.gold_sum)
-                    },
-                    byPlatform: {
-                        vita:       Number(data.data.platform_counts.psvita_sum),
-                        ps3:        Number(data.data.platform_counts.ps3_sum),
-                        ps4:        Number(data.data.platform_counts.ps4_sum)
-                    }
-                }
-            };
-
             for (trophy of data.data.trophies) {
                 list.push({
                     index: Number(trophy.trophyIndex),
@@ -92,16 +74,43 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
                     case '3': list[list.length - 1].trophy.type = 'platinum'; break;
                 }
             }
-            resolve({summary: summary, list: list});
+            resolve(list);
         })
         .catch(err => reject(err));
 });
 
-getSummary = user => new Promise((resolve, reject) =>
-    getPage(user)
-        .then(result => resolve(result.summary))
-        .catch(err => reject(err))
-);
+getSummary = user => new Promise((resolve, reject) => {
+    if (log) console.log('Checking summary');
+
+    let formData = new FormData();
+    formData.append('psnid', user);     formData.append('earned', 1);
+
+    fetch('http://psntrophyleaders.com/user/get_rare_trophies', {
+        method: 'POST', body: formData
+    })
+        .then(result => result.json().catch(err => reject({
+            name: 'Failed to get summ',
+            message: 'Profile could not be read! Maybe try updating it first?'
+        })))
+        .then(data => data.success ? resolve({
+            username: user,
+            count: {
+                total:          Number(data.data.count),
+                byType: {
+                    bronze:     Number(data.data.type_counts.bronze_sum),
+                    silver:     Number(data.data.type_counts.silver_sum),
+                    gold:       Number(data.data.type_counts.gold_sum),
+                    platinum:   Number(data.data.type_counts.gold_sum)
+                },
+                byPlatform: {
+                    vita:       Number(data.data.platform_counts.psvita_sum),
+                    ps3:        Number(data.data.platform_counts.ps3_sum),
+                    ps4:        Number(data.data.platform_counts.ps4_sum)
+                }
+            }
+        }) : reject({name: 'Failed to get profile', message: data.message}))
+        .catch(err => reject(err));
+});
 
 getAll = user => new Promise((resolve, reject) => {
     const start = Date.now();
@@ -110,15 +119,18 @@ getAll = user => new Promise((resolve, reject) => {
 
     function loop(page = 1, list = []) {
         getPage(user, page)
-            .then(result => {
-                if (result.list.length > 0) loop(page + 1, list.concat(result.list));
+            .then(trophyList => {
+                if (trophyList.length > 0) loop(page + 1, list.concat(trophyList));
                 else {
-                    if (log) console.log(
-                        'DONE!\n',
-                        'Completed in', Date.now() - start, 'ms\n',
-                        'Trophies: ', list.length
-                    );
-                    resolve(Object.assign(result.summary, {trophyList: list}));
+                    getSummary(user).then(summary => {
+                        summary.trophyList = list;
+                        resolve(summary);
+                        if (log) console.log(
+                            'DONE!\n',
+                            'Completed in', Date.now() - start, 'ms\n',
+                            'Trophies: ', list.length
+                        );
+                    });
                 }
             })
             .catch(err => reject(err));
