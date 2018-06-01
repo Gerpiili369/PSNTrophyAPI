@@ -16,6 +16,7 @@ update = user => new Promise((resolve, reject) => {
                 data.message.indexOf('is not valid!') != -1 ? 'Invalid username!' :
                 data.message.indexOf('does not meet') != -1 ? 'User doesn\'t meet the requirements!' :
                 data.message.indexOf('reached the limit') != -1 ? 'API is unable to add any more users today. Visit http://psntrophyleaders.com to add your profile manually.' :
+                data.message.indexOf('not authorized') != -1 ? 'API was not authorized. Visit http://psntrophyleaders.com to add your profile manually.' :
                 'Something went wrong...'
         })
     )
