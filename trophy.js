@@ -49,7 +49,7 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
                 name: 'Failed to get profile',
                 message: data.message
             });
-            
+
             summary = {
                 username: user,
                 count: {
@@ -127,101 +127,6 @@ getAll = user => new Promise((resolve, reject) => {
             })
             .catch(err => reject(err));
     }
-})
-
-getTrophies = (user, page) => new Promise(function(resolve, reject) {
-    if (page && (page < 1 || isNaN(page))) return reject({name: 'Number error', message: 'Invalid page number!'});
-    const fullSearch = page ? false : true, start = Date.now();
-    let run = true, list = [], newList, formData, summary, type;
-
-    if (log) console.log('Trying to update user...');
-    updateProfile(user).then(() => (loop = (page = 1) => {
-        if (log) console.log('Checking page #', page);
-        if (run) new Promise((resolve, reject) => {
-            formData = new FormData();
-            formData.append('psnid', user);    formData.append('page', page);
-            formData.append('rare', 127);      formData.append('type', 15);
-            formData.append('earned', 1);      formData.append('platform', 7);
-
-            fetch('http://psntrophyleaders.com/user/get_rare_trophies', {
-                method: 'POST',
-                body: formData
-            }).then(result => result.json())
-            .then(data => {
-                if (data.data.trophies.length === 0 || !fullSearch) {
-                    if (log) console.log('End of trophies, adding the cherry...');
-                    summary = {
-                        username: user,
-                        count: {
-                            total:          Number(data.data.count),
-                            byType: {
-                                bronze:     Number(data.data.type_counts.bronze_sum),
-                                silver:     Number(data.data.type_counts.silver_sum),
-                                gold:       Number(data.data.type_counts.gold_sum),
-                                platinum:   Number(data.data.type_counts.gold_sum)
-                            },
-                            byPlatform: {
-                                vita:       Number(data.data.platform_counts.psvita_sum),
-                                ps3:        Number(data.data.platform_counts.ps3_sum),
-                                ps4:        Number(data.data.platform_counts.ps4_sum)
-                            }
-                        }
-                    };
-                }
-
-                newList = [];
-                for (trophy of data.data.trophies) {
-                    newList.push({
-                        index: Number(trophy.trophyIndex),
-                        trophy: {
-                            title: trophy.title,
-                            description: trophy.description,
-                            type: trophy.trophy_type,
-                            id: Number(trophy.trophy_id),
-                            earned: new Date(trophy.date_earned.replace(' ', 'T') + 'Z').getTime(),
-                            hidden: trophy.hidden == 1,
-                            dlc: trophy.dlc == 0,
-                            img: trophy.image
-                        },
-                        game: {
-                            title: trophy.game_title,
-                            img: trophy.game_image
-                        }
-                    });
-
-                    type = newList[newList.length - 1].trophy.type;
-                    switch (type) {
-                        case '0': type = 'bronze';   break;
-                        case '1': type = 'silver';   break;
-                        case '2': type = 'gold';     break;
-                        case '3': type = 'platinum'; break;
-                    }
-                }
-                return [list, summary];
-            })
-            .then(result => {
-                list = list.concat(result[0]);
-                if (log) console.log('Trophies: ', list.length);
-                resolve(result[1]);
-
-            })
-            .catch(err => reject(err));
-        })
-        .then(result => {
-            page ++;
-            if (typeof result == 'object' || !fullSearch) {
-                result.trophies = list;
-                if (log) console.log(
-                    'DONE!\n',
-                    'Completed in', Date.now() - start, 'ms\n',
-                    'Trophies: ', list.length
-                );
-                resolve(result);
-            } else if (fullSearch) loop(page);
-        })
-        .catch(err => reject(err));
-    }) (page))
-    .catch(err => reject(err));
 })
 
 groupByGame = trophies => {

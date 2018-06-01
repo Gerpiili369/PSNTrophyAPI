@@ -27,6 +27,10 @@ app.get('/trophies/:username', (req, res) =>
 
 app.get('/trophies/:username/:page', (req, res) =>
     trophy.getPage(req.params.username, req.params.page)
+        .then(trophyData => {
+            if (req.query.groupByGame === 'true') trophyData.trophies = trophy.groupByGame(trophyData.trophies);
+            return trophyData;
+        })
         .then(data => res.end(JSON.stringify(data.list, null, 4)))
         .catch(err => res.end(JSON.stringify({
             error: {name:err.name, message: err.message}
