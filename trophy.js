@@ -36,15 +36,12 @@ getPage = (user, page = 1) => new Promise((resolve, reject) => {
     formData.append('earned', 1);      formData.append('platform', 7);
 
     fetch('http://psntrophyleaders.com/user/get_rare_trophies', {
-        method: 'POST',
-        body: formData
+        method: 'POST', body: formData
     })
-        .then(result => result.json().catch(err => reject(
-            {
-                name: 'Failed to get profile',
-                message: 'Profile could not be read! Maybe try updating it first?'
-            })
-        ))
+        .then(result => result.json().catch(err => reject({
+            name: 'Failed to get profile',
+            message: 'Profile could not be read! Maybe try updating it first?'
+        })))
         .then(data => {
             if (!data.success) return reject({
                 name: 'Failed to get profile',
