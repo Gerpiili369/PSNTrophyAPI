@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'), FormData = require('form-data'), log = true;
+const fetch = require('node-fetch'), FormData = require('form-data'), log = false;
 
 update = user => new Promise((resolve, reject) => {
     let formData = new FormData();
