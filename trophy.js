@@ -113,7 +113,6 @@ getAll = user => new Promise((resolve, reject) => {
     function loop(page = 1, list = []) {
         getPage(user, page)
             .then(result => {
-                // console.log(result.list);
                 if (result.list.length > 0) loop(page + 1, list.concat(result.list));
                 else {
                     if (log) console.log(
@@ -123,7 +122,6 @@ getAll = user => new Promise((resolve, reject) => {
                     );
                     resolve(Object.assign(result.summary, {trophyList: list}));
                 }
-                // } else if (fullSearch) loop(page);
             })
             .catch(err => reject(err));
     }

@@ -21,7 +21,7 @@ app.get('/trophies/:username', (req, res) =>
         })
         .then(data => res.end(JSON.stringify(data, null, 4)))
         .catch(err => res.end(JSON.stringify({
-            error: {name:err.name, message: err.message}
+            error: {name: err.name, message: err.message}
         }, null, 4)))
 );
 
@@ -33,7 +33,7 @@ app.get('/trophies/:username/:page', (req, res) =>
         })
         .then(data => res.end(JSON.stringify(data.list, null, 4)))
         .catch(err => res.end(JSON.stringify({
-            error: {name:err.name, message: err.message}
+            error: {name: err.name, message: err.message}
         }, null, 4)))
 );
 
@@ -41,7 +41,7 @@ app.get('/summary/:username',(req, res) =>
     trophy.getSummary(req.params.username)
         .then(data => res.end(JSON.stringify(data, null, 4)))
         .catch(err => res.end(JSON.stringify({
-            error: {name:err.name, message: err.message}
+            error: {name: err.name, message: err.message}
         }, null, 4)))
 );
 
@@ -49,7 +49,7 @@ app.get('/update/:username',(req, res) =>
     trophy.update(req.params.username)
         .then(data => res.end(JSON.stringify(data, null, 4)))
         .catch(err => res.end(JSON.stringify({
-            error: {name:err.name, message: err.message}
+            error: {name: err.name, message: err.message}
         }, null, 4)))
 );
 
