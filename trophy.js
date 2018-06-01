@@ -127,9 +127,9 @@ getAll = user => new Promise((resolve, reject) => {
     }
 })
 
-groupByGame = trophies => {
+groupByGame = trophyList => {
     let lastGame = '', list = [];
-    for (trophyData of trophies) {
+    for (trophyData of trophyList) {
         if (trophyData.game.title != lastGame) {
             list.push({
                 title: trophyData.game.title,
