@@ -16,7 +16,7 @@ const
 app.get('/trophies/:username', (req, res) =>
     trophy.getAll(req.params.username)
         .then(trophyData => {
-            if (req.query.groupByGame === 'true') trophyData.trophies = trophy.groupByGame(trophyData.trophies);
+            if (req.query.groupByGame === 'true') trophyData.trophyList = trophy.groupByGame(trophyData.trophyList);
             return trophyData;
         })
         .then(data => res.end(JSON.stringify(data, null, 4)))
