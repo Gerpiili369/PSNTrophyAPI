@@ -59,10 +59,11 @@ getPage = (user, options) => new Promise((resolve, reject) => {
                         title: trophy.title,
                         description: trophy.description,
                         type: trophy.trophy_type,
+                        rarity: Number(trophy.sony_rare_percent),
                         id: Number(trophy.trophy_id),
-                        earned: new Date(trophy.date_earned.replace(' ', 'T') + 'Z').getTime(),
+                        earned: trophy.stamp * 1000,
                         hidden: trophy.hidden == 1,
-                        dlc: trophy.dlc == 0,
+                        dlc: trophy.dlc == 1,
                         img: trophy.image
                     },
                     game: {
