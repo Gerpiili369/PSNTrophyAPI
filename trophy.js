@@ -23,17 +23,21 @@ update = user => new Promise((resolve, reject) => {
     .catch(err => reject(err));
 })
 
-getPage = (user, page = 1) => new Promise((resolve, reject) => {
-    if (page < 1 || isNaN(page)) return reject({name: 'Number error', message: 'Invalid page number!'});
+getPage = (user, options) => new Promise((resolve, reject) => {
+    if (options.page && (options.page < 1 || isNaN(options.page))) return reject({name: 'Number error', message: 'Invalid page number!'});
     const start = Date.now();
-    let list = [], formData, summary, type;
+    let list = [], formData, summary;
 
-    if (log) console.log('Checking page #', page);
+    if (log) console.log('Checking page #', options.page || 1);
 
     formData = new FormData();
-    formData.append('psnid', user);    formData.append('page', page);
-    formData.append('rare', 127);      formData.append('type', 15);
-    formData.append('earned', 1);      formData.append('platform', 7);
+    formData.append('psnid', user || '');
+    formData.append('earned', options.earned || 1);
+    formData.append('page', options.page || 1);
+    formData.append('rare', options.rare || 127);
+    formData.append('type', options.type || 15);
+    formData.append('platform', options.platform || 7);
+    formData.append('trophy_sort', options.sort || 'date_earned-desc');
 
     fetch('http://psntrophyleaders.com/user/get_rare_trophies', {
         method: 'POST', body: formData
@@ -118,7 +122,7 @@ getAll = user => new Promise((resolve, reject) => {
     loop();
 
     function loop(page = 1, list = []) {
-        getPage(user, page)
+        getPage(user, {page: page})
             .then(trophyList => {
                 if (trophyList.length > 0) loop(page + 1, list.concat(trophyList));
                 else {

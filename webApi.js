@@ -26,7 +26,7 @@ app.get('/trophies/:username', (req, res) =>
 );
 
 app.get('/trophies/:username/:page', (req, res) =>
-    trophy.getPage(req.params.username, req.params.page)
+    trophy.getPage(req.params.username, {page: req.params.page})
         .then(list =>
             req.query.groupByGame === 'true' ? trophy.groupByGame(list) : list
         )
