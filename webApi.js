@@ -24,7 +24,14 @@ app.get('/games/:username', (req, res) =>
 app.get('/trophies/:username', (req, res) =>
     trophy.getAll(req.params.username)
         .then(trophyData => {
-            if (req.query.groupByGame === 'true') trophyData.trophyList = trophy.groupByGame(trophyData.trophyList);
+            if (req.query.groupByDate) trophyData.trophyList = trophy.groupByDate( trophyData.trophyList, req.query.groupByDate);
+            return trophyData;
+        })
+        .then(trophyData => {
+            if (req.query.groupByGame == 'true') {
+                if (req.query.groupByDate) for (const date in trophyData.trophyList) trophyData.trophyList[date].list = trophy.groupByGame(trophyData.trophyList[date].list);
+                else trophyData.trophyList = trophy.groupByGame(trophyData.trophyList);
+            }
             return trophyData;
         })
         .then(data => res.end(JSON.stringify(data, null, 4)))
@@ -36,8 +43,15 @@ app.get('/trophies/:username', (req, res) =>
 app.get('/trophies/:username/:page', (req, res) =>
     trophy.getPage(req.params.username, {page: req.params.page})
         .then(list =>
-            req.query.groupByGame === 'true' ? trophy.groupByGame(list) : list
+            req.query.groupByDate ? trophy.groupByDate(list, req.query.groupByDate) : list
         )
+        .then(list => {
+            if (req.query.groupByGame == 'true') {
+                if (req.query.groupByDate) for (const date in list) list[date].list = trophy.groupByGame(list[date].list);
+                else return trophy.groupByGame(list);
+            }
+            return list;
+        })
         .then(data => res.end(JSON.stringify(data, null, 4)))
         .catch(err => res.end(JSON.stringify({
             error: {name: err.name, message: err.message}

@@ -154,6 +154,39 @@ objectByGame = trophyList => {
     return object;
 }
 
+groupByDate = (trophyList, precision) => {
+    let last = new Date(Date.now() * 10), current, match = true, list = [];
+    for (trophyData of trophyList) {
+        current = new Date(trophyData.trophy.earned);
+        switch (precision) {
+            case 'hour': last.getHours() === current.getHours() ? '' : match = false;
+            case 'day': last.getDate() === current.getDate() ? '' : match = false;
+            case 'month': last.getMonth() === current.getMonth() ? '' : match = false;
+            case 'year': last.getFullYear() === current.getFullYear() ? '' : match = false;
+            break;
+            default:
+            match = false;
+            precision = 'day';
+        }
+
+        if (!match) {
+            list.push({
+                title: new Date(
+                    current.getFullYear(),
+                    precision != 'year' ? current.getMonth() : 0,
+                    precision == 'day' || precision == 'hour' ? current.getDate() : 1,
+                    precision == 'hour' ? current.getHours() : 0
+                ).getTime(),
+                list: []
+            });
+            last = current;
+        }
+        list[list.length - 1].list.push(trophyData);
+        match = true;
+    }
+    return list;
+}
+
 groupByGame = trophyList => {
     let lastGame = '', list = [];
     for (trophyData of trophyList) {
@@ -178,5 +211,6 @@ module.exports = {
     getSummary,
     getAll,
     objectByGame,
+    groupByDate,
     groupByGame
 };
