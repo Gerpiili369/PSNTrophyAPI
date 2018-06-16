@@ -160,4 +160,10 @@ groupByGame = trophyList => {
     return list;
 }
 
-module.exports = {update, getPage, getSummary, getAll, groupByGame};
+module.exports = {
+    update,
+    getPage,
+    getSummary,
+    getAll,
+    groupByGame
+};
