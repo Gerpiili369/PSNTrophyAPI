@@ -12,6 +12,11 @@ const
 
     trophy = require('./trophy.js');
 
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    next();
+});
+
 app.get('/games/:username', (req, res) =>
     trophy.getAll(req.params.username)
         .then(trophyData => trophy.objectByGame(trophyData.trophyList))
