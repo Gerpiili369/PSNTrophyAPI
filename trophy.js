@@ -142,6 +142,18 @@ getAll = user => new Promise((resolve, reject) => {
     }
 })
 
+objectByGame = trophyList => {
+    let object = {};
+    for (trophyData of trophyList) {
+        if (!object[trophyData.game.title]) object[trophyData.game.title] = {
+            img: trophyData.game.img,
+            list: []
+        };
+        object[trophyData.game.title].list.push(trophyData.trophy);
+    }
+    return object;
+}
+
 groupByGame = trophyList => {
     let lastGame = '', list = [];
     for (trophyData of trophyList) {
@@ -165,5 +177,6 @@ module.exports = {
     getPage,
     getSummary,
     getAll,
+    objectByGame,
     groupByGame
 };

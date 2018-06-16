@@ -12,6 +12,14 @@ const
 
     trophy = require('./trophy.js');
 
+app.get('/games/:username', (req, res) =>
+    trophy.getAll(req.params.username)
+        .then(trophyData => trophy.objectByGame(trophyData.trophyList))
+        .then(data => res.end(JSON.stringify(data, null, 4)))
+        .catch(err => res.end(JSON.stringify({
+            error: {name: err.name, message: err.message}
+        }, null, 4)))
+);
 
 app.get('/trophies/:username', (req, res) =>
     trophy.getAll(req.params.username)
