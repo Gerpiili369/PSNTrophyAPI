@@ -24,6 +24,10 @@ module.exports = () => {
 
     routes.get('/trophies/:username', (req, res) =>
         trophy.getAll(req.params.username)
+            .then(userData => {
+                if (req.query.showNew == 'true') res.end(JSON.stringify(userData, null, 4));
+                else return newToOld(userData.trophyList);
+            })
             .then(trophyData => {
                 if (req.query.groupByDate) trophyData.trophyList = trophy.groupByDate( trophyData.trophyList, req.query.groupByDate);
                 return trophyData;
