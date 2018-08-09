@@ -1,7 +1,6 @@
 const
     fs = require('fs'),
     fetch = require('node-fetch'),
-    FormData = require('form-data'),
     tpyUrl = 'https://us-tpy.np.community.playstation.net/trophy/v1/trophyTitles';
     log = true;
 
