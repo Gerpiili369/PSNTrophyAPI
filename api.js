@@ -5,12 +5,23 @@ const
     express = require('express'),
     routes = express.Router(),
 
-    trophy = require('./trophy.js');
+    Trophy = require('./trophy.js'),
+    trophy = new Trophy(require('./auth.json').token);
 
 module.exports = () => {
     routes.use((req, res, next) => {
         res.append('Access-Control-Allow-Origin', ['*']);
         next();
+    });
+
+    routes.get('/auth/:token', (req, res) => {
+        trophy.token = 'Bearer ' + req.params.token;
+        res.end(JSON.stringify({
+            info: {
+                name: 'Token update',
+                message: 'Authorization bearer token has been updated.'
+            }
+        }, null, 4));
     });
 
     routes.get('/games/:username', (req, res) =>
