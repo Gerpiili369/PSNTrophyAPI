@@ -131,7 +131,7 @@ module.exports = class PSNTrophyAPI {
 
             const start = Date.now();
             let gameProms = [], userData = {timestamp: null, profile: undefined, trophyList: {}}, userDataFromFile;
-            if (fs.existsSync('profiles/' + user + '.json')) userDataFromFile = JSON.parse(fs.readFileSync('profiles/' + user + '.json', 'utf-8', err => {if (err) console.log(err);}));
+            if (fs.existsSync('profiles/' + user + '.json')) userDataFromFile = require('./profiles/' + user + '.json');
             this.getProfile(user)
                 .then(data => {
                     if (userDataFromFile) {
