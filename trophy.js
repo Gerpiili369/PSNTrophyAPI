@@ -350,4 +350,32 @@ module.exports = class PSNTrophyAPI {
         }
         return list;
     }
+
+    checkToken(token) {
+        return new Promise((resolve, reject) => {
+            fetch('https://asm.np.community.playstation.net/asm/v1/apps/me/baseUrls/userProfile', {
+                headers: {
+                    'Authorization': 'Bearer ' + token || this.token
+                }
+            })
+                .then(res => res.json().catch(err => reject({
+                    name: 'Failed to get trophies', message: 'Response is not JSON!'
+                })))
+                .then(data => {
+                    if (data.error) switch (data.error.code) {
+                        case 2097664: // Access token equired
+                        case 2097665: // Invalid access token
+                        case 2097666: // Expired access token
+                            resolve({usable: false, message: data.error.message});
+                            break;
+                        default:
+                            reject({
+                                name: 'Unrecognized error',
+                                message: data.error.message
+                            });
+                    } else resolve({usable: true, message: 'This token can be used.'});
+                })
+                .catch(reject);
+        });
+    }
 }

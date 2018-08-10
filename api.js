@@ -15,13 +15,24 @@ module.exports = () => {
     });
 
     routes.get('/auth/:token', (req, res) => {
-        res.end(JSON.stringify({
-            info: {
-                name: 'Token update',
-                message: 'Authorization bearer token has been updated.'
-            }
-        }, null, 4));
         trophy.token = req.params.token;
+        trophy.checkToken(req.params.token)
+            .then(result => {
+                if (result.usable) {
+                    res.end(JSON.stringify({
+                        info: {
+                            name: 'Token update success',
+                            message: 'Authorization bearer token has been updated.'
+                        }
+                    }, null, 4));
+                } else return Promise.reject({
+                    name: 'Token update failure',
+                    message: result.message
+                })
+            })
+            .catch(err => res.end(JSON.stringify({
+                error: {name: err.name, message: err.message}
+            }, null, 4)))
     });
 
     routes.get('/games/:username', (req, res) =>
