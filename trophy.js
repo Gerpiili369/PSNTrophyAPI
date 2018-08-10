@@ -18,7 +18,7 @@ module.exports = class PSNTrophyAPI {
                 '/profile2?fields=onlineId%2CaboutMe%2CconsoleAvailability%2ClanguagesUsed%2CavatarUrls%2CpersonalDetail%2CpersonalDetail(%40default%2CprofilePictureUrls)%2CprimaryOnlineStatus%2CtrophySummary(level%2Cprogress%2CearnedTrophies)%2Cplus%2CisOfficiallyVerified%2CfriendRelation%2CpersonalDetailSharing%2Cpresences(%40default%2Cplatform)%2CnpId%2Cblocking%2Cfollowing%2CmutualFriendsCount%2CfollowerCount&profilePictureSizes=s%2Cm%2Cl&avatarSizes=s%2Cm%2Cl&languagesUsedLanguageSet=set4',
                 {
                     headers: {
-                        'Authorization': this.token
+                        'Authorization': 'Bearer ' + this.token
                     }
                 }
             )
@@ -46,7 +46,7 @@ module.exports = class PSNTrophyAPI {
                     '&comparedUser=' + user + '&npLanguage=en',
                     {
                         headers: {
-                            'Authorization': this.token
+                            'Authorization': 'Bearer ' + this.token
                         }
                     }
                 )
@@ -88,7 +88,7 @@ module.exports = class PSNTrophyAPI {
                 '&comparedUser=' + user + '&npLanguage=en',
                 {
                     headers: {
-                        'Authorization': this.token
+                        'Authorization': 'Bearer ' + this.token
                     }
                 }
             )
@@ -111,7 +111,7 @@ module.exports = class PSNTrophyAPI {
                 '&comparedUser=' + user + '&npLanguage=en',
                 {
                     headers: {
-                        'Authorization': this.token
+                        'Authorization': 'Bearer ' + this.token
                     }
                 }
             )

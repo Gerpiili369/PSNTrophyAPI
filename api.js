@@ -15,13 +15,13 @@ module.exports = () => {
     });
 
     routes.get('/auth/:token', (req, res) => {
-        trophy.token = 'Bearer ' + req.params.token;
         res.end(JSON.stringify({
             info: {
                 name: 'Token update',
                 message: 'Authorization bearer token has been updated.'
             }
         }, null, 4));
+        trophy.token = req.params.token;
     });
 
     routes.get('/games/:username', (req, res) =>
