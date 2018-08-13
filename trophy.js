@@ -196,7 +196,7 @@ module.exports = class PSNTrophyAPI {
                 })
                 .catch(err => {
                     if (userDataFromFile) {
-                        if (this.log) console.log('Fetch error. Using backup file.');
+                        if (this.log) console.log((err.name || 'Fetch error') + '. Using backup file.');
                         console.log(err);
                         resolve(userDataFromFile);
                     }
