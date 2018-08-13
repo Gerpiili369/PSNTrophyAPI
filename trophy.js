@@ -1,11 +1,13 @@
 const
     fs = require('fs'),
     fetch = require('node-fetch'),
+    profilePath = __dirname + '/profiles',
     tpyUrl = 'https://us-tpy.np.community.playstation.net/trophy/v1/trophyTitles';
 
 module.exports = class PSNTrophyAPI {
-    constructor(token) {
+    constructor(token, fileSave = true) {
         this.token = token;
+        this.fileSave = fileSave;
         this.log = false;
     }
 
@@ -131,7 +133,7 @@ module.exports = class PSNTrophyAPI {
 
             const start = Date.now();
             let gameProms = [], userData = {timestamp: null, profile: undefined, trophyList: {}}, userDataFromFile;
-            if (fs.existsSync('profiles/' + user + '.json')) userDataFromFile = require('./profiles/' + user + '.json');
+            if (fs.existsSync(`${profilePath}/${user}.json`)) userDataFromFile = require(`${profilePath}/${user}.json`);
             this.getProfile(user)
                 .then(data => {
                     if (userDataFromFile) {
@@ -182,7 +184,10 @@ module.exports = class PSNTrophyAPI {
                 .then(gameProms => Promise.all(gameProms))
                 .then(() => {
                     userData.timestamp = Date.now();
-                    fs.writeFile('profiles/' + user + '.json', JSON.stringify(userData, null, 4), err => {if (err) console.log(err);});
+                    if (this.fileSave) {
+                        !fs.existsSync(profilePath) && fs.mkdirSync(profilePath);
+                        fs.writeFile(`${profilePath}/${user}.json`, JSON.stringify(userData, null, 4), err => {if (err) console.log(err);});
+                    }
                     if (this.log) console.log(
                         'DONE!\n',
                         'Completed in', Date.now() - start, 'ms\n',
